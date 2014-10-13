@@ -1,0 +1,49 @@
+name: FactoidInventory
+main: me.tabinol.factoidinventory.FactoidInventory
+version: ${project.version}
+description: Multiple inventories for Factoid
+author: [Tabinol]
+depend: [Factoid]
+commands:
+   finv:
+      description: Flags Inventory Command
+      usage: /finv help
+      permission: finv.use
+      permission-message: you don't have permission for finv command!
+permissions:
+    finv.*:
+        description: All permisions (except inventory changes)
+        default: op
+        children:
+            finv.use: true
+            finv.reload: true
+            finv.forcesave: true
+            finv.default: true
+            finv.loaddeath: true
+            finv.ignoredisabledcommands: true
+    finv.use:
+        description: Can use /finv command
+        default: true
+    finv.reload:
+        description: Can use /finv reload command
+        default: op
+    finv.forcesave:
+        description: Can use /finv forcesave command
+        default: op
+    finv.default:
+        description: Can use /finv default command
+        default: op
+    finv.loaddeath:
+        description: Can use /finv loaddeath command
+        default: op
+    finv.ignorecreativeinv:
+        description: Ignore creative inventory change
+        default: false
+    finv.ignoreinv:
+        description: Ignore inventory change
+        default: false
+        children:
+            finv.ignorecreativeinv: true
+    finv.ignoredisabledcommands:
+        description: Ignore disabled commands
+        default: op
