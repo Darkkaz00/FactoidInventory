@@ -18,6 +18,7 @@
 package me.tabinol.factoidinventory.inventories;
 
 import me.tabinol.factoidapi.FactoidAPI;
+import me.tabinol.factoidapi.event.LandModifyEvent;
 import me.tabinol.factoidapi.event.PlayerLandChangeEvent;
 import me.tabinol.factoidapi.lands.IDummyLand;
 import me.tabinol.factoidinventory.FactoidInventory;
@@ -107,6 +108,16 @@ public class InventoryListener implements Listener {
         
         inventoryStorage.switchInventory(player,
                 event.getLandOrOutside(), player.getGameMode() == GameMode.CREATIVE, InventoryStorage.PlayerAction.CHANGE);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onLandModify(LandModifyEvent event) {
+
+        for(Player player : event.getLand().getWorld().getPlayers()) {
+            inventoryStorage.switchInventory(player,
+            		FactoidAPI.iLands().getLandOrOutsideArea(player.getLocation()), 
+            		player.getGameMode() == GameMode.CREATIVE, InventoryStorage.PlayerAction.CHANGE);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
