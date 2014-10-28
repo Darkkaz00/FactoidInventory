@@ -20,6 +20,7 @@ package me.tabinol.factoidinventory.inventories;
 import me.tabinol.factoidapi.FactoidAPI;
 import me.tabinol.factoidapi.event.LandModifyEvent;
 import me.tabinol.factoidapi.event.PlayerLandChangeEvent;
+import me.tabinol.factoidapi.event.LandModifyEvent.LandModifyReason;
 import me.tabinol.factoidapi.lands.IDummyLand;
 import me.tabinol.factoidinventory.FactoidInventory;
 
@@ -113,11 +114,29 @@ public class InventoryListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLandModify(LandModifyEvent event) {
 
-        for(Player player : event.getLand().getWorld().getPlayers()) {
-            inventoryStorage.switchInventory(player,
-            		FactoidAPI.iLands().getLandOrOutsideArea(player.getLocation()), 
-            		player.getGameMode() == GameMode.CREATIVE, InventoryStorage.PlayerAction.CHANGE);
-        }
+
+        LandModifyReason reason = event.getLandModifyReason();
+    	
+    	// Test to be specific (take specific players)
+        if(reason == LandModifyReason.AREA_ADD || reason == LandModifyReason.AREA_REMOVE
+    			|| reason == LandModifyReason.AREA_REPLACE) {
+        	
+        	// Land area change, all players in the world affected
+        	for(Player player : event.getLand().getWorld().getPlayers()) {
+                inventoryStorage.switchInventory(player,
+                		FactoidAPI.iLands().getLandOrOutsideArea(player.getLocation()), 
+                		player.getGameMode() == GameMode.CREATIVE, InventoryStorage.PlayerAction.CHANGE);
+            }
+    	} else if(reason != LandModifyReason.PERMISSION_SET && reason != LandModifyReason.PERMISSION_SET
+    			&& reason != LandModifyReason.RENAME) {
+    	
+    		// No land resize or area replace, only players in the land affected
+    		for(Player player : event.getLand().getPlayersInLandAndChildren()) {
+                inventoryStorage.switchInventory(player,
+                		FactoidAPI.iLands().getLandOrOutsideArea(player.getLocation()), 
+                		player.getGameMode() == GameMode.CREATIVE, InventoryStorage.PlayerAction.CHANGE);
+    		}
+    	}
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
