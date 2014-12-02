@@ -106,8 +106,8 @@ public class InventoryStorage {
         }
     }
     
-    public void saveInventory(Player player, String invName,
-            boolean isCreative, boolean isDeath, boolean isSaveAllowed, boolean isDefaultInv) {
+    public void saveInventory(Player player, String invName, boolean isCreative, 
+    		boolean isDeath, boolean isSaveAllowed, boolean isDefaultInv, boolean enderChestOnly) {
 
         // If for some reasons whe have to skip save (ex: SaveInventory = false)
         if (!isSaveAllowed) {
@@ -169,34 +169,54 @@ public class InventoryStorage {
         File playerItemFile = new File(file, "/" + filePreName + ".yml");
 
         try {
-            ConfigPlayerItemFile.set("Version", STORAGE_VERSION);
-            ConfigPlayerItemFile.set("Level", player.getLevel());
-            ConfigPlayerItemFile.set("Exp", (float) player.getExp());
-            ConfigPlayerItemFile.set("Health", player.getHealth());
-            ConfigPlayerItemFile.set("FoodLevel", player.getFoodLevel());
 
-            ItemStack[] itemListSave = player.getInventory().getContents();
-            ItemStack[] itemArmorSave = player.getInventory().getArmorContents();
-            ItemStack[] itemEnderChest = player.getEnderChest().getContents();
-            for (int t = 0; t < itemListSave.length; t++) {
-                ConfigPlayerItemFile.set("Slot." + t, itemListSave[t]);
-            }
-            for (int t = 0; t < itemArmorSave.length; t++) {
-                ConfigPlayerItemFile.set("Armor." + t, itemArmorSave[t]);
-            }
-            for (int t = 0; t < itemEnderChest.length; t++) {
-                ConfigPlayerItemFile.set("EnderChest." + t, itemEnderChest[t]);
-            }
+    		ConfigPlayerItemFile.set("Version", STORAGE_VERSION);
 
-            // PotionsEffects
-            Collection<PotionEffect> activePotionEffects = player.getActivePotionEffects();
-            ConfigurationSection effectSection = ConfigPlayerItemFile.createSection("PotionEffect");
-            for (PotionEffect effect : activePotionEffects) {
-                ConfigurationSection effectSubSection = effectSection.createSection(effect.getType().getName());
-                effectSubSection.set("Duration", effect.getDuration());
-                effectSubSection.set("Amplifier", effect.getAmplifier());
-                effectSubSection.set("Ambient", effect.isAmbient());
-            }
+        	// Save Only ender chest (Death)
+    		if(enderChestOnly) {
+        		ConfigPlayerItemFile.set("Level", 0);
+        		ConfigPlayerItemFile.set("Exp", 0f);
+        		ConfigPlayerItemFile.set("Health", player.getMaxHealth());
+        		ConfigPlayerItemFile.set("FoodLevel", MAX_FOOD_LEVEL);
+
+        		ItemStack[] itemEnderChest = player.getEnderChest().getContents();
+        		for (int t = 0; t < 4; t++) {
+        			ConfigPlayerItemFile.set("Armor." + t, new ItemStack(Material.AIR));
+        		}
+        		for (int t = 0; t < itemEnderChest.length; t++) {
+        			ConfigPlayerItemFile.set("EnderChest." + t, itemEnderChest[t]);
+        		}
+        		
+        	// Save all
+    		} else {
+        		ConfigPlayerItemFile.set("Level", player.getLevel());
+        		ConfigPlayerItemFile.set("Exp", (float) player.getExp());
+        		ConfigPlayerItemFile.set("Health", player.getHealth());
+        		ConfigPlayerItemFile.set("FoodLevel", player.getFoodLevel());
+
+        		ItemStack[] itemListSave = player.getInventory().getContents();
+        		ItemStack[] itemArmorSave = player.getInventory().getArmorContents();
+        		ItemStack[] itemEnderChest = player.getEnderChest().getContents();
+        		for (int t = 0; t < itemListSave.length; t++) {
+        			ConfigPlayerItemFile.set("Slot." + t, itemListSave[t]);
+        		}
+        		for (int t = 0; t < itemArmorSave.length; t++) {
+        			ConfigPlayerItemFile.set("Armor." + t, itemArmorSave[t]);
+        		}
+        		for (int t = 0; t < itemEnderChest.length; t++) {
+        			ConfigPlayerItemFile.set("EnderChest." + t, itemEnderChest[t]);
+        		}
+
+        		// PotionsEffects
+        		Collection<PotionEffect> activePotionEffects = player.getActivePotionEffects();
+        		ConfigurationSection effectSection = ConfigPlayerItemFile.createSection("PotionEffect");
+        		for (PotionEffect effect : activePotionEffects) {
+        			ConfigurationSection effectSubSection = effectSection.createSection(effect.getType().getName());
+        			effectSubSection.set("Duration", effect.getDuration());
+        			effectSubSection.set("Amplifier", effect.getAmplifier());
+        			effectSubSection.set("Ambient", effect.isAmbient());
+        		}
+        	}
 
             ConfigPlayerItemFile.save(playerItemFile);
 
@@ -379,17 +399,18 @@ public class InventoryStorage {
             return;
         }
 
-        // Save last inventory
-        if (playerAction != PlayerAction.JOIN) {
-            saveInventory(player, fromInv.getInventoryName(), fromIsCreative,
-                    playerAction == PlayerAction.DEATH, fromInv.isSaveInventory(), false);
-        }
-        
-        // Remove Inventory if the player is Death
+        // If the player is death, save a renamed file
         if (playerAction == PlayerAction.DEATH) {
-        	deleteInventory(player, fromInv.getInventoryName(), fromIsCreative); 
+            saveInventory(player, fromInv.getInventoryName(), fromIsCreative,
+                    true, fromInv.isSaveInventory(), false, false);
         }
 
+        // Save last inventory (only EnderChest if death)
+        if (playerAction != PlayerAction.JOIN) {
+            saveInventory(player, fromInv.getInventoryName(), fromIsCreative,
+                    false, fromInv.isSaveInventory(), false, playerAction == PlayerAction.DEATH);
+        }
+        
         // Don't load a new inventory if the player quit
         if (playerAction != PlayerAction.QUIT && playerAction != PlayerAction.DEATH) {
             loadInventory(player, toInv.getInventoryName(), toIsCreative, false, 0);

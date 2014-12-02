@@ -78,10 +78,10 @@ public class InventoryListener implements Listener {
     public void forceSave() {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            inventoryStorage.saveInventory(player, null, true, true, false, false);
+            inventoryStorage.saveInventory(player, null, true, true, false, false, false);
             InventorySpec invSpec = FactoidInventory.getConf().getInvSpec(getDummyLand(player.getLocation()));
             inventoryStorage.saveInventory(player, invSpec.getInventoryName(),
-                    player.getGameMode() == GameMode.CREATIVE, false, false, false);
+                    player.getGameMode() == GameMode.CREATIVE, false, false, false, false);
         }
 
         inventoryStorage.savePlayerOfflineInv();
@@ -225,6 +225,6 @@ public class InventoryListener implements Listener {
     public void saveDefaultInventory(Player player, InventorySpec invSpec) {
 
         inventoryStorage.saveInventory(player, invSpec.getInventoryName(),
-                player.getGameMode() == GameMode.CREATIVE, false, true, true);
+                player.getGameMode() == GameMode.CREATIVE, false, true, true, false);
     }
 }
