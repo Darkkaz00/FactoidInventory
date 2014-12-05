@@ -107,7 +107,7 @@ public class InventoryConfig {
         
         // If the flag is set with wrong inventory
         if(invSpec == null) {
-            thisPlugin.getLogger().log(Level.WARNING, "Inventory name \"" + invFlagValue.getValueString() + "\" is not found"
+            thisPlugin.getLogger().log(Level.WARNING, "Inventory name \"" + invFlagValue.getValueString() + "\" is not found "
                     + "in " + thisPlugin.getName() + "/plugin.yml!");
             return invList.get(GLOBAL);
         }
