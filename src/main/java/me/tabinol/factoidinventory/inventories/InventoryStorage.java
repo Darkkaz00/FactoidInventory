@@ -114,11 +114,6 @@ public class InventoryStorage {
             return;
         }
         
-        // Death not detected but the player is death. No save to prevent death loop on tp (fix)
-        if(!isDeath && player.isDead()) {
-        	return;
-        }
-
         File file;
         String filePreName;
 
