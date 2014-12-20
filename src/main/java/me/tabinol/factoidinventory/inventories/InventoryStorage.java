@@ -45,7 +45,6 @@ public class InventoryStorage {
     public final static String DEFAULT_INV = "DEFAULTINV";
     public final static int MAX_FOOD_LEVEL = 20;
     public final static String DEATH = "DEATH";
-    private final PlayerOfflineInv playerOfflineInv;
     private final FactoidInventory thisPlugin;
     private final HashMap<Player, PlayerInvEntry> playerInvList; // Last inventory
 
@@ -81,15 +80,7 @@ public class InventoryStorage {
     public InventoryStorage() {
 
         this.thisPlugin = FactoidInventory.getThisPlugin();
-        playerOfflineInv = new PlayerOfflineInv();
-        playerOfflineInv.loadAll();
-        playerOfflineInv.saveAll();
         playerInvList = new HashMap<Player, PlayerInvEntry>();
-    }
-
-    public void savePlayerOfflineInv() {
-
-        playerOfflineInv.saveAll();
     }
 
     public void deleteInventory(Player player, String invName,
@@ -346,15 +337,13 @@ public class InventoryStorage {
 
     public void switchInventory(Player player, IDummyLand dummyLand, boolean toIsCreative, PlayerAction playerAction) {
 
-        PlayerInvEntry invEntry;
+        PlayerInvEntry invEntry = null;
         boolean fromIsCreative = false;
         InventorySpec fromInv = null;
         InventorySpec toInv;
 
         // Check last values
-        if (playerAction == PlayerAction.JOIN) {
-            invEntry = playerOfflineInv.getPlayerOfflineInv(player);
-        } else {
+        if (playerAction != PlayerAction.JOIN) {
             invEntry = playerInvList.get(player);
         }
 
@@ -389,19 +378,19 @@ public class InventoryStorage {
 
         // Return if the inventory will be exacly the same
         if (playerAction != PlayerAction.DEATH && playerAction != PlayerAction.QUIT
-                && (fromInv == null || (fromInv.getInventoryName().equals(toInv.getInventoryName())
-                && fromIsCreative == toIsCreative))) {
+                && (fromInv != null && fromInv.getInventoryName().equals(toInv.getInventoryName())
+                && fromIsCreative == toIsCreative)) {
             return;
         }
 
         // If the player is death, save a renamed file
-        if (playerAction == PlayerAction.DEATH) {
+        if (playerAction == PlayerAction.DEATH && fromInv != null) {
             saveInventory(player, fromInv.getInventoryName(), fromIsCreative,
                     true, fromInv.isSaveInventory(), false, false);
         }
 
         // Save last inventory (only EnderChest if death)
-        if (playerAction != PlayerAction.JOIN) {
+        if (playerAction != PlayerAction.JOIN && fromInv != null) {
             saveInventory(player, fromInv.getInventoryName(), fromIsCreative,
                     false, fromInv.isSaveInventory(), false, playerAction == PlayerAction.DEATH);
         }
@@ -413,7 +402,6 @@ public class InventoryStorage {
 
         // If the player quit, update Offline Inventories and remove player
         if (playerAction == PlayerAction.QUIT) {
-            playerOfflineInv.putPlayerOfflineInv(player, new PlayerInvEntry(toInv, toIsCreative));
             playerInvList.remove(player);
         }
     }

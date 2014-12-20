@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.tabinol.factoidinventory</groupId>
     <artifactId>FactoidInventory</artifactId>
-    <version>0.3.3</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>FactoidInventory</name>
@@ -21,8 +21,8 @@
 
     <repositories>
 		<repository>
-			<id>bukkit-repo</id>
-			<url>http://repo.bukkit.org/content/groups/public/</url>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public</url>
 		</repository>
         <repository>
             <id>Tabinol.me Artifactory</id>
@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.7.9-R0.2</version>
+			<version>1.8-R0.1-SNAPSHOT</version>
 			<optional>true</optional>
 		</dependency>
         <dependency>

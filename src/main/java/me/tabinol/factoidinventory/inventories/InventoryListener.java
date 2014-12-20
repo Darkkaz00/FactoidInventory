@@ -72,7 +72,6 @@ public class InventoryListener implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             removePlayer(player);
         }
-        inventoryStorage.savePlayerOfflineInv();
     }
 
     public void forceSave() {
@@ -83,8 +82,6 @@ public class InventoryListener implements Listener {
             inventoryStorage.saveInventory(player, invSpec.getInventoryName(),
                     player.getGameMode() == GameMode.CREATIVE, false, false, false, false);
         }
-
-        inventoryStorage.savePlayerOfflineInv();
     }
 
     public void removePlayer(Player player) {
