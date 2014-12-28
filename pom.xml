@@ -24,11 +24,10 @@
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public</url>
 		</repository>
-        <repository>
-            <id>Tabinol.me Artifactory</id>
-            <name>Tabinol.me Artifactory-releases</name>
-            <url>http://artifactory.tabinol.me/artifactory/public</url>
-        </repository>
+		<repository>
+			<id>Tabinol.me Nexus</id>
+			<url>http://nexus.tabinol.me/content/groups/public</url>
+		</repository>
     </repositories>
 
     <dependencies>
@@ -47,7 +46,7 @@
         <dependency>
             <groupId>me.tabinol.factoid</groupId>
             <artifactId>FactoidAPI</artifactId>
-            <version>0.5.0</version>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
     
