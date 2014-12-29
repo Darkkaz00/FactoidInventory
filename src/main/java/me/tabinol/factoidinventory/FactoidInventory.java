@@ -17,6 +17,8 @@
  */
 package me.tabinol.factoidinventory;
 
+import java.io.IOException;
+
 import me.tabinol.factoidinventory.config.InventoryConfig;
 import me.tabinol.factoidinventory.inventories.InventoryListener;
 import me.tabinol.factoidinventory.utils.MavenAppProperties;
@@ -24,6 +26,7 @@ import me.tabinol.factoidinventory.utils.MavenAppProperties;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.MetricsLite;
 
 public class FactoidInventory extends JavaPlugin {
 
@@ -47,6 +50,14 @@ public class FactoidInventory extends JavaPlugin {
         // Enable InveotryListener
         inventoryListener = new InventoryListener();
         getServer().getPluginManager().registerEvents(inventoryListener, this);
+    
+        // Start Plugin Metrics
+        try {
+            MetricsLite metrics = new MetricsLite(this);
+            metrics.start();
+        } catch (IOException e) {
+            // Failed to submit the stats :-(
+        }
     }
 
     @Override

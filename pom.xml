@@ -28,6 +28,10 @@
 			<id>Tabinol.me Nexus</id>
 			<url>http://nexus.tabinol.me/content/groups/public</url>
 		</repository>
+		<repository>
+            <id>Plugin Metrics</id>
+            <url>http://repo.mcstats.org/content/repositories/public</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -47,6 +51,12 @@
             <groupId>me.tabinol.factoid</groupId>
             <artifactId>FactoidAPI</artifactId>
             <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mcstats.bukkit</groupId>
+            <artifactId>metrics-lite</artifactId>
+            <version>R8-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     
@@ -74,26 +84,33 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
-                <configuration>
-                    <!-- Default configuration for all reports -->
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>javadoc</goal>
-                            <goal>test-javadoc</goal>
-                        </goals>
-                        <phase>site</phase>
-                        <configuration>
-                            <!-- Specific configuration for the given reports -->
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<minimizeJar>true</minimizeJar>
+							<artifactSet>
+								<includes>
+                            		<include>org.mcstats.*:*</include>
+								</includes>
+							</artifactSet>
+                    		<relocations>
+                	        	<relocation>
+            	                	<pattern>org.mcstats</pattern>
+        	                    	<shadedPattern>me.tabinol.factoid</shadedPattern>
+    	                    	</relocation>
+	                    	</relocations>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
         </plugins>
     </build>
 </project>
