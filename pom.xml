@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.tabinol.factoidinventory</groupId>
     <artifactId>FactoidInventory</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>FactoidInventory</name>
     <url>http://www.tabinol.me</url>
 
     <properties>
-		<build.number>SNAPSHOT</build.number>
+		<build.number></build.number>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- *** Change Storage version here *** -->
@@ -51,7 +51,7 @@
     </dependencies>
     
     <build>
-		<finalName>${project.artifactId}-${project.version}-${build.number}</finalName>
+		<finalName>${project.artifactId}-${project.version}${build.number}</finalName>
         <resources>
             <resource>
                 <targetPath>.</targetPath>
